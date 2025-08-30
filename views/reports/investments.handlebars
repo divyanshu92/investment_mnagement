@@ -1,0 +1,131 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-chart-area me-2 text-success"></i>
+        Investment Summary Report
+    </h1>
+</div>
+
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="month" class="form-label">Month</label>
+                <input type="text" class="form-control" name="month" id="month" 
+                       placeholder="e.g., January" value="{{selectedMonth}}">
+            </div>
+            <div class="col-md-4">
+                <label for="year" class="form-label">Year</label>
+                <input type="text" class="form-control" name="year" id="year" 
+                       placeholder="e.g., 2024" value="{{selectedYear}}">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-filter me-1"></i>Generate Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h3>{{formatCurrency grandTotal}}</h3>
+                <p class="mb-0">Total Investment Portfolio</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#if investments.length}}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>
+            Investment Breakdown by Account
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Account/Investment</th>
+                        <th>Total Amount</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each fields}}
+                    {{#if (lookup ../totals this)}}
+                    <tr>
+                        <td>{{this}}</td>
+                        <td class="fw-bold">{{formatCurrency (lookup ../totals this)}}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar bg-success" role="progressbar" 
+                                     style="width: {{multiply (divide (lookup ../totals this) ../grandTotal) 100}}%">
+                                    {{multiply (divide (lookup ../totals this) ../grandTotal) 100}}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/if}}
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-calendar me-2"></i>
+            Monthly Investment Records
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>Date</th>
+                        <th>Month</th>
+                        {{#each fields}}
+                        <th class="text-center">{{this}}</th>
+                        {{/each}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each investments}}
+                    <tr>
+                        <td>{{formatDate date}}</td>
+                        <td>{{month}}</td>
+                        {{#each ../fields}}
+                        <td class="text-center">{{formatCurrency (lookup ../this this)}}</td>
+                        {{/each}}
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="card">
+    <div class="card-body text-center">
+        <i class="fas fa-chart-area fa-3x text-muted mb-3"></i>
+        <h5>No investment data found</h5>
+        <p class="text-muted">Add some investment records to see the summary report.</p>
+        <a href="/investments/add" class="btn btn-success me-2">
+            <i class="fas fa-plus me-1"></i>Add Investment
+        </a>
+        <a href="/investments/upload" class="btn btn-info">
+            <i class="fas fa-upload me-1"></i>Upload CSV
+        </a>
+    </div>
+</div>
+{{/if}}

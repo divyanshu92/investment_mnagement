@@ -1,0 +1,153 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-balance-scale me-2 text-warning"></i>
+        Expenses vs Investments Comparison
+    </h1>
+</div>
+
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="month" class="form-label">Month</label>
+                <select name="month" id="month" class="form-select">
+                    <option value="">All Months</option>
+                    {{#each (array "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12") as |monthNum|}}
+                    <option value="{{monthNum}}" {{#if (eq ../selectedMonth monthNum)}}selected{{/if}}>
+                        {{lookup (array "January" "February" "March" "April" "May" "June" "July" "August" "September" "October" "November" "December") @index}}
+                    </option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="year" class="form-label">Year</label>
+                <select name="year" id="year" class="form-select">
+                    <option value="">All Years</option>
+                    <option value="2024" {{#if (eq selectedYear "2024")}}selected{{/if}}>2024</option>
+                    <option value="2023" {{#if (eq selectedYear "2023")}}selected{{/if}}>2023</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-filter me-1"></i>Generate Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-arrow-down fa-2x mb-2"></i>
+                <h3>{{formatCurrency comparison.expenses}}</h3>
+                <p class="mb-0">Total Expenses</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-arrow-up fa-2x mb-2"></i>
+                <h3>{{formatCurrency comparison.investments}}</h3>
+                <p class="mb-0">Total Investments</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card {{#if (gt comparison.difference 0)}}bg-success{{else}}bg-warning{{/if}} text-white">
+            <div class="card-body text-center">
+                <i class="fas fa-{{#if (gt comparison.difference 0)}}plus{{else}}minus{{/if}} fa-2x mb-2"></i>
+                <h3>{{formatCurrency comparison.difference}}</h3>
+                <p class="mb-0">Net {{#if (gt comparison.difference 0)}}Savings{{else}}Deficit{{/if}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Financial Overview
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label">Investment to Expense Ratio</label>
+                    <div class="progress" style="height: 30px;">
+                        <div class="progress-bar bg-success" role="progressbar" 
+                             style="width: {{comparison.ratio}}%">
+                            {{comparison.ratio}}%
+                        </div>
+                    </div>
+                    <small class="text-muted">
+                        {{#if (gt comparison.ratio 100)}}
+                            Excellent! You're investing more than you spend.
+                        {{else if (gt comparison.ratio 50)}}
+                            Good! You're maintaining a healthy investment rate.
+                        {{else}}
+                            Consider increasing your investment rate.
+                        {{/if}}
+                    </small>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h4 class="text-danger">{{formatCurrency comparison.expenses}}</h4>
+                            <small class="text-muted">Expenses</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">{{formatCurrency comparison.investments}}</h4>
+                        <small class="text-muted">Investments</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Financial Insights
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-{{#if (gt comparison.difference 0)}}success{{else}}warning{{/if}}">
+                    <h6>
+                        <i class="fas fa-{{#if (gt comparison.difference 0)}}check-circle{{else}}exclamation-triangle{{/if}} me-2"></i>
+                        {{#if (gt comparison.difference 0)}}Positive{{else}}Negative{{/if}} Cash Flow
+                    </h6>
+                    <p class="mb-0">
+                        {{#if (gt comparison.difference 0)}}
+                            You're saving {{formatCurrency comparison.difference}} this period. Keep up the good work!
+                        {{else}}
+                            You're spending {{formatCurrency (multiply comparison.difference -1)}} more than you're investing. Consider reviewing your expenses.
+                        {{/if}}
+                    </p>
+                </div>
+                
+                <div class="mt-3">
+                    <h6>Recommendations:</h6>
+                    <ul class="list-unstyled">
+                        {{#if (lt comparison.ratio 50)}}
+                        <li><i class="fas fa-arrow-up text-success me-2"></i>Try to increase investment rate</li>
+                        {{/if}}
+                        {{#if (gt comparison.expenses 50000)}}
+                        <li><i class="fas fa-cut text-warning me-2"></i>Review high expense categories</li>
+                        {{/if}}
+                        <li><i class="fas fa-target text-info me-2"></i>Aim for 60% investment ratio</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

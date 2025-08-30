@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-upload me-2 text-info"></i>
+        Upload Investment Data
+    </h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>CSV Format Requirements:</strong>
+                    <ul class="mb-0 mt-2">
+                        <li>First row should contain headers matching the investment fields</li>
+                        <li>Date format: YYYY-MM-DD</li>
+                        <li>Month format: "January 2024" or similar</li>
+                        <li>All amount fields should be numeric (decimals allowed)</li>
+                    </ul>
+                </div>
+                
+                <form method="POST" action="/investments/upload" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="csvFile" class="form-label">Select CSV File</label>
+                        <input type="file" class="form-control" id="csvFile" name="csvFile" 
+                               accept=".csv" required>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-upload me-1"></i>
+                            Upload & Import
+                        </button>
+                        <a href="/investments" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Back to Investments
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-download me-2"></i>
+                    Sample CSV Template
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>Download a sample CSV template to see the expected format:</p>
+                <a href="/sample-investment-template.csv" class="btn btn-outline-primary" download>
+                    <i class="fas fa-download me-1"></i>
+                    Download Template
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

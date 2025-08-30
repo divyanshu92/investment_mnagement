@@ -1,0 +1,122 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-chart-pie me-2 text-primary"></i>
+        Expense Summary Report
+    </h1>
+</div>
+
+<!-- Filter Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label for="month" class="form-label">Month</label>
+                <select name="month" id="month" class="form-select">
+                    <option value="">All Months</option>
+                    {{#each (array "01" "02" "03" "04" "05" "06" "07" "08" "09" "10" "11" "12") as |monthNum|}}
+                    <option value="{{monthNum}}" {{#if (eq ../selectedMonth monthNum)}}selected{{/if}}>
+                        {{lookup (array "January" "February" "March" "April" "May" "June" "July" "August" "September" "October" "November" "December") @index}}
+                    </option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="year" class="form-label">Year</label>
+                <select name="year" id="year" class="form-select">
+                    <option value="">All Years</option>
+                    <option value="2024" {{#if (eq selectedYear "2024")}}selected{{/if}}>2024</option>
+                    <option value="2023" {{#if (eq selectedYear "2023")}}selected{{/if}}>2023</option>
+                </select>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary">
+                    <i class="fas fa-filter me-1"></i>Generate Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h3>{{formatCurrency total}}</h3>
+                <p class="mb-0">Total Expenses</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h3>{{summary.length}}</h3>
+                <p class="mb-0">Categories</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-white">
+            <div class="card-body text-center">
+                <h3>{{formatCurrency (divide total summary.length)}}</h3>
+                <p class="mb-0">Average per Category</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{#if summary.length}}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>
+            Category Breakdown
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Category</th>
+                        <th>Count</th>
+                        <th>Total Amount</th>
+                        <th>Average</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each summary}}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary">{{type}}</span>
+                        </td>
+                        <td>{{count}}</td>
+                        <td class="fw-bold">{{formatCurrency total}}</td>
+                        <td>{{formatCurrency average}}</td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{multiply (divide total ../total) 100}}%">
+                                    {{multiply (divide total ../total) 100}}%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{else}}
+<div class="card mt-4">
+    <div class="card-body text-center">
+        <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+        <h5>No expense data found</h5>
+        <p class="text-muted">Add some expenses to see the summary report.</p>
+        <a href="/expenses/add" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Add Expense
+        </a>
+    </div>
+</div>
+{{/if}}

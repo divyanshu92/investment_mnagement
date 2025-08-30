@@ -1,0 +1,60 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-{{#if isEdit}}edit{{else}}plus{{/if}} me-2 text-success"></i>
+        {{#if isEdit}}Edit{{else}}Add{{/if}} Investment
+    </h1>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="/investments/{{#if isEdit}}edit/{{investment.id}}{{else}}add{{/if}}">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" 
+                                   value="{{#if investment}}{{investment.date}}{{/if}}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="month" class="form-label">Month</label>
+                            <input type="text" class="form-control" id="month" name="month" 
+                                   placeholder="e.g., January 2024" 
+                                   value="{{#if investment}}{{investment.month}}{{/if}}" required>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mb-3 text-primary">
+                        <i class="fas fa-university me-2"></i>
+                        Investment Accounts
+                    </h5>
+                    
+                    <div class="row">
+                        {{#each fields}}
+                        <div class="col-md-4 mb-3">
+                            <label for="{{this}}" class="form-label">{{this}}</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" step="0.01" class="form-control" 
+                                       id="{{this}}" name="{{this}}" 
+                                       value="{{#if ../investment}}{{lookup ../investment this}}{{else}}0{{/if}}">
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i>
+                            {{#if isEdit}}Update{{else}}Save{{/if}} Investment
+                        </button>
+                        <a href="/investments" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>
+                            Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
